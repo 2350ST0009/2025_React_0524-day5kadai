@@ -1,13 +1,191 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  color: #333333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.app-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+}
+
+.todo-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.todo-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #5c67f2;
+  margin-bottom: 20px;
+}
+
+.todo-input-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.todo-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  outline: none;
+  font-size: 1rem;
+  color: #333333;
+}
+
+.todo-add-button {
+  background: #5c67f2;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.todo-add-button:hover {
+  background: #4a53d6;
+}
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+}
+
+.todo-item {
+  background: #f4f4f4;
+  padding: 10px 15px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  transition: background 0.3s;
+}
+
+.todo-item.completed {
+  text-decoration: line-through;
+  color: #888888;
+}
+
+.todo-text {
+  cursor: pointer;
+  flex-grow: 1;
+  transition: color 0.3s;
+}
+
+.todo-text:hover {
+  color: #5c67f2;
+}
+
+.todo-delete-button {
+  background: #ff6b6b;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.todo-delete-button:hover {
+  background: #e55a5a;
+}
+
+.todo-sort-button {
+  background: #f2a365;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-bottom: 20px;
+}
+
+.todo-sort-button:hover {
+  background: #e68a50;
+}
+
+.todo-date-input {
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #333333;
+}
+
+.todo-date {
+  margin-left: 15px;
+  font-size: 0.9rem;
+  color: #777777;
+}
+
+
+/* サブtodo */
+
+.subtask-container {
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+.subtask-input {
+  padding: 8px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #333333;
+  margin-bottom: 10px;
+  width: calc(100% - 40px);
+}
+
+.subtask-list {
+  list-style: none;
+  padding: 0;
+}
+
+.subtask-item {
+  background: #f9f9f9;
+  padding: 5px 10px;
+  border-radius: 6px;
+  margin-bottom: 5px;
+}
+
+.subtask-text {
+  cursor: pointer;
+  display: inline-block;
+}
+
+
+.sort-buttons {
+  display: flex;
+  gap: 10px; /* ボタンの間隔を設定 */
+  margin-bottom: 20px;
+}
+
+.todo-sort-button {
+  background: #5c67f2;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.todo-sort-button:hover {
+  background: #4a53d6;
 }
