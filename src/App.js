@@ -1,5 +1,19 @@
 import React, { useState } from "react";
-import "./index.css";
+import {
+  Button,
+  TextField,
+  Typography,
+  Card,
+  CardContent,
+  CardActions,
+  Checkbox,
+  FormControlLabel,
+  Box,
+  IconButton,
+  CssBaseline,
+} from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
 
 const TodoApp = () => {
   const [tasks, setTasks] = useState([]);
@@ -7,17 +21,17 @@ const TodoApp = () => {
   const [taskDate, setTaskDate] = useState("");
   const [sortByDate, setSortByDate] = useState(false);
   const [sortByCompletion, setSortByCompletion] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   const addTask = () => {
     if (newTask.trim() !== "" && taskDate !== "") {
       setTasks([
         ...tasks,
-        { 
+        {
           id: Date.now(),
           text: newTask,
           date: taskDate,
           completed: false,
-          subtasks: [],
         },
       ]);
       setNewTask("");
@@ -35,51 +49,6 @@ const TodoApp = () => {
   const deleteTask = (id) => {
     const updatedTasks = tasks.filter((task) => task.id !== id);
     setTasks(updatedTasks);
-  };
-
-  const addSubtask = (parentId, subtaskText) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === parentId
-          ? {
-              ...task,
-              subtasks: [
-                ...task.subtasks,
-                {
-                  id: Date.now(),
-                  text: subtaskText,
-                  completed: false,
-                },
-              ],
-            }
-          : task
-      )
-    );
-  };
-
-  const toggleSubtask = (parentId, subtaskId) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.id === parentId) {
-          const updatedSubtasks = task.subtasks.map((subtask) =>
-            subtask.id === subtaskId
-              ? { ...subtask, completed: !subtask.completed }
-              : subtask
-          );
-
-          const allCompleted = updatedSubtasks.every(
-            (subtask) => subtask.completed
-          );
-
-          return {
-            ...task,
-            completed: allCompleted,
-            subtasks: updatedSubtasks,
-          };
-        }
-        return task;
-      })
-    );
   };
 
   const toggleSortByDate = () => {
@@ -101,103 +70,87 @@ const TodoApp = () => {
         : 0
     )
     .sort((a, b) =>
-      sortByDate
-        ? new Date(a.date) - new Date(b.date)
-        : 0
+      sortByDate ? new Date(a.date) - new Date(b.date) : 0
     );
 
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? "dark" : "light",
+    },
+  });
+
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
+  };
+
   return (
-    <div className="app-container">
-      <div className="todo-wrapper">
-        <h1 className="todo-title">Todoアプリ</h1>
-        <div className="todo-input-container">
-          <input
-            type="text"
-            className="todo-input"
-            placeholder="新しいタスクを追加"
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "background.default",
+          color: "text.primary",
+          padding: 4,
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "flex-end", marginBottom: 2 }}>
+          <IconButton onClick={toggleDarkMode} color="inherit">
+            {darkMode ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
+        </Box>
+        <Typography variant="h4" align="center" gutterBottom>
+          Todoアプリ MUIversion
+        </Typography>
+        <Box sx={{ display: "flex", gap: 2, marginBottom: 2 }}>
+          <TextField
+            label="新しいタスクを追加"
+            variant="outlined"
+            fullWidth
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
           />
-          <input
+          <TextField
             type="date"
-            className="todo-date-input"
+            variant="outlined"
+            sx={{ flexBasis: "150px" }}
             value={taskDate}
             onChange={(e) => setTaskDate(e.target.value)}
           />
-          <button className="todo-add-button" onClick={addTask}>
+          <Button variant="contained" onClick={addTask}>
             追加
-          </button>
-        </div>
-        <div className="sort-buttons">
-          <button
-            className="todo-sort-button"
-            onClick={toggleSortByDate}
-          >
+          </Button>
+        </Box>
+        <Box sx={{ display: "flex", gap: 2, marginBottom: 2 }}>
+          <Button variant="outlined" onClick={toggleSortByDate}>
             並べ替え: {sortByDate ? "日付順" : "順序なし"}
-          </button>
-          <button
-            className="todo-sort-button"
-            onClick={toggleSortByCompletion}
-          >
+          </Button>
+          <Button variant="outlined" onClick={toggleSortByCompletion}>
             並べ替え: {sortByCompletion ? "完了状態" : "順序なし"}
-          </button>
-        </div>
-        <ul className="todo-list">
-          {sortedTasks.map((task) => (
-            <li
-              key={task.id}
-              className={`todo-item ${task.completed ? "completed" : ""}`}
-            >
-              <span
-                className="todo-text"
-                onClick={() => toggleTask(task.id)}
-              >
-                {task.text}
-              </span>
-              <span className="todo-date">{task.date}</span>
-              <button
-                className="todo-delete-button"
-                onClick={() => deleteTask(task.id)}
-              >
+          </Button>
+        </Box>
+        {sortedTasks.map((task) => (
+          <Card key={task.id} sx={{ marginBottom: 2 }}>
+            <CardContent>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={task.completed}
+                    onChange={() => toggleTask(task.id)}
+                  />
+                }
+                label={`${task.text} (${task.date})`}
+              />
+            </CardContent>
+            <CardActions>
+              <Button color="error" onClick={() => deleteTask(task.id)}>
                 削除
-              </button>
-              <div className="subtask-container">
-                <input
-                  type="text"
-                  className="subtask-input"
-                  placeholder="サブタスクを追加"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && e.target.value.trim() !== "") {
-                      addSubtask(task.id, e.target.value);
-                      e.target.value = "";
-                    }
-                  }}
-                />
-                <ul className="subtask-list">
-                  {task.subtasks.map((subtask) => (
-                    <li
-                      key={subtask.id}
-                      className={`subtask-item ${
-                        subtask.completed ? "completed" : ""
-                      }`}
-                    >
-                      <span
-                        className="subtask-text"
-                        onClick={() =>
-                          toggleSubtask(task.id, subtask.id)
-                        }
-                      >
-                        {subtask.text}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+              </Button>
+            </CardActions>
+          </Card>
+        ))}
+      </Box>
+    </ThemeProvider>
   );
 };
 
