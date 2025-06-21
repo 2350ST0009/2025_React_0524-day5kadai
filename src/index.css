@@ -205,3 +205,38 @@ body {
   font-size: 1rem;
   color: #555;
 }
+
+.form-section {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.form-input-container {
+  margin-bottom: 15px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.saved-data-section {
+  background: #e9f5ff;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.saved-data-item {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.saved-data-item:last-child {
+  border-bottom: none;
+}

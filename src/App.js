@@ -9,17 +9,52 @@ const TodoApp = () => {
   const [sortByCompletion, setSortByCompletion] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [expandedTaskIds, setExpandedTaskIds] = useState([]);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    comment: "",
+  });
+  const [savedData, setSavedData] = useState([]);
+  const maxLengths = {
+    name: 20,
+    email: 30,
+    comment: 100,
+  };
 
   useEffect(() => {
     const savedTasks = JSON.parse(localStorage.getItem("tasks"));
     if (savedTasks) {
       setTasks(savedTasks);
     }
+    const savedFormData = JSON.parse(localStorage.getItem("formData"));
+    if (savedFormData) {
+      setSavedData(savedFormData);
+    }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem("formData", JSON.stringify(savedData));
+  }, [savedData]);
+
+  const handleInputChange = (field, value) => {
+    if (value.length > maxLengths[field]) return; // 上限チェック
+    setFormData({ ...formData, [field]: value });
+  };
+
+  const saveFormData = () => {
+    const newEntry = {
+      ...formData,
+      name: formData.name || "未入力です",
+      email: formData.email || "未入力です",
+      comment: formData.comment || "未入力です",
+    };
+    setSavedData([...savedData, newEntry]);
+    setFormData({ name: "", email: "", comment: "" }); // リセット
+  };
 
   const addTask = () => {
     if (newTask.trim() === "") {
@@ -61,18 +96,17 @@ const TodoApp = () => {
       prevTasks.map((task) =>
         task.id === parentId
           ? {
-              ...task,
-              subtasks: [
-                ...task.subtasks,
-                { id: Date.now(), text: subtaskText, completed: false },
-              ],
-            }
+            ...task,
+            subtasks: [
+              ...task.subtasks,
+              { id: Date.now(), text: subtaskText, completed: false },
+            ],
+          }
           : task
       )
     );
   };
 
-  
   const toggleSubtask = (parentId, subtaskId) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
@@ -115,8 +149,8 @@ const TodoApp = () => {
         ? a.completed === b.completed
           ? 0
           : a.completed
-          ? 1
-          : -1
+            ? 1
+            : -1
         : 0
     )
     .sort((a, b) =>
@@ -124,6 +158,10 @@ const TodoApp = () => {
         ? new Date(a.date) - new Date(b.date)
         : 0
     );
+
+
+
+
 
   return (
     <div className="app-container">
@@ -150,9 +188,10 @@ const TodoApp = () => {
           </button>
         </div>
 
+
         {/* リアルタイム表示 */}
         <div className="real-time-display">
-          <p>入力中のタスク: {newTask || ""}</p>
+          <p>入力中のタスク: {newTask || "なし"}</p>
         </div>
 
         {/* 並べ替えと検索 */}
@@ -204,10 +243,10 @@ const TodoApp = () => {
               >
                 {expandedTaskIds.includes(task.id) ? "縮小" : "展開"}
               </button>
+
               <div
-                className={`subtask-container ${
-                  expandedTaskIds.includes(task.id) ? "expanded" : "collapsed"
-                }`}
+                className={`subtask-container ${expandedTaskIds.includes(task.id) ? "expanded" : "collapsed"
+                  }`}
               >
                 <input
                   type="text"
@@ -224,9 +263,8 @@ const TodoApp = () => {
                   {task.subtasks.map((subtask) => (
                     <li
                       key={subtask.id}
-                      className={`subtask-item ${
-                        subtask.completed ? "completed" : ""
-                      }`}
+                      className={`subtask-item ${subtask.completed ? "completed" : ""
+                        }`}
                     >
                       <span
                         className="subtask-text"
@@ -238,9 +276,62 @@ const TodoApp = () => {
                   ))}
                 </ul>
               </div>
+
             </li>
           ))}
         </ul>
+
+        {/* 名前・メール・コメント入力フォーム */}
+        <div className="form-section">
+          <h2>データ入力</h2>
+          <div className="form-input-container">
+            <input
+              type="text"
+              placeholder="名前"
+              value={formData.name}
+              onChange={(e) => handleInputChange("name", e.target.value)}
+            />
+            <div>文字数: {formData.name.length}/{maxLengths.name}</div>
+          </div>
+          <div className="form-input-container">
+            <input
+              type="email"
+              placeholder="メール"
+              value={formData.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+            />
+            <div>文字数: {formData.email.length}/{maxLengths.email}</div>
+          </div>
+          <div className="form-input-container">
+            <textarea
+              placeholder="コメント"
+              value={formData.comment}
+              onChange={(e) => handleInputChange("comment", e.target.value)}
+            />
+            <div>文字数: {formData.comment.length}/{maxLengths.comment}</div>
+          </div>
+          <button className="todo-add-button" onClick={saveFormData}>
+            保存
+          </button>
+        </div>
+
+        {/* 保存済みデータ一覧 */}
+        <div className="saved-data-section">
+          <h2>保存したデータ</h2>
+          {savedData.length === 0 ? (
+            <p>保存されたデータがありません。</p>
+          ) : (
+            <ul className="saved-data-list">
+              {savedData.map((data, index) => (
+                <li key={index} className="saved-data-item">
+                  <p>名前: {data.name}</p>
+                  <p>メール: {data.email}</p>
+                  <p>コメント: {data.comment}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );
