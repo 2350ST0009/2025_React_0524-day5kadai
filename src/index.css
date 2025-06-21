@@ -169,6 +169,12 @@ body {
   display: inline-block;
 }
 
+.subtask-container.collapsed {
+  display: none;
+}
+.subtask-container.expanded {
+  display: block;
+}
 
 .sort-buttons {
   display: flex;
@@ -188,4 +194,14 @@ body {
 
 .todo-sort-button:hover {
   background: #4a53d6;
+}
+
+/* リアルタイム表示部分のスタイルを追加します。 */
+.real-time-display {
+  background: #f1f1f1;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #555;
 }
